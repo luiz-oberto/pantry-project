@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Despensa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Despensa</h1>
+    </header>
+    <main>
+        <section id="presentes">
+            <h2>Itens Presentes</h2>
+            <ul id="presentes-list">
+                {% for item in item_list %}
+                    <li>{{ item.name }} ({{ item.quantity }} unidade(s))</li>
+                {% endfor %}
+            </ul>
+        </section>
+        <!-- <section id="ausentes">
+            <h2>Itens Ausentes</h2>
+            <ul id="ausentes-list">
+                {% for item in ausentes %}
+                    <li>{{ item.nome }}</li>
+                {% endfor %}
+            </ul>
+        </section> -->
+    </main>
+</body>
+</html>

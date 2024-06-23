@@ -1,2 +1,2 @@
-# praticing-Jinja2
-Just a repository where i will pratice the use of Jinja2 with python and Flask.
+# Pantry-project
+- Estou criando este projeto com o intuito de praticar meus conhecimentos em Python utilizando com o framework Flask. Meu objetivo é criar um sistema web aonde vou acessar os item que possuo na minha despensa.

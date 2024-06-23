@@ -20,7 +20,8 @@ class Item(db.Model):
 def hello(name=', tudo bem?'):
     return render_template('base.html', person=name)
 
-@app.route('/api/item/add', methods=["POST"])
+# Adiciona um item
+@app.route('/api/items/add', methods=["GET","POST"])
 def add_item():
     data = request.json
     if 'name' and 'quantity' in data:
@@ -28,9 +29,10 @@ def add_item():
         db.session.add(item)
         db.session.commit()
         return jsonify({'message': "Item added sucessfully"})
-    return jsonify({'message': "Invalid item data"})
+    return jsonify({'message': "Invalid item data"}), 400
 
-@app.route('/api/items')
+# Lista todos os itens na página inicial
+@app.route('/')
 def get_items():
     items = Item.query.all()
     item_list = []
@@ -41,18 +43,35 @@ def get_items():
             "quantity": item.quantity
         }
         item_list.append(item_data)
-    return jsonify(item_list)
+    return render_template('items.html', item_list=item_list)
 
-# @app.route('/api/item/delete', methods=["DELETE"])
+# Deleta um item
+@app.route('/api/items/delete/<int:item_id>', methods=["DELETE"])
+def delete_item(item_id):
+    item = Item.query.get(item_id)
+    if item:
+        db.session.delete(item)
+        db.session.commit()
+        return jsonify({"message": "Item deleted successfully"})
+    return jsonify({"message": "Item not found"}), 404
 
-# @app.route('/api/item/update' methods=["PUT"])
+# Atualizar item
+@app.route('/api/items/update/<int:item_id>', methods=["PUT"])
+def update_item(item_id):
+    item = Item.query.get(item_id)
+    if not item:
+        jsonify({'message': "Item not found"}), 404
+    
+    data = request.json
+    if 'quantity' in data:
+        item.quantity = data['quantity']
+    
+    db.session.commit()
+    return jsonify({'message': "Item updated successfully"})
+
 
 # @app.route('/login')
 # @app.route('/logout')
-
-@app.route('/')
-def hello_word():
-    return 'Hello Word!'
 
 if __name__ == '__main__':
     app.run(debug=True)
