@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -14,23 +14,6 @@ class Item(db.Model):
     quantity = db.Column(db.Integer, nullable=False)
 
 
-
-@app.route('/hello')
-@app.route('/hello/<name>')
-def hello(name=', tudo bem?'):
-    return render_template('base.html', person=name)
-
-# Adiciona um item
-@app.route('/api/items/add', methods=["GET","POST"])
-def add_item():
-    data = request.json
-    if 'name' and 'quantity' in data:
-        item = Item(name=data["name"], quantity=data['quantity'])
-        db.session.add(item)
-        db.session.commit()
-        return jsonify({'message': "Item added sucessfully"})
-    return jsonify({'message': "Invalid item data"}), 400
-
 # Lista todos os itens na página inicial
 @app.route('/')
 def get_items():
@@ -45,15 +28,34 @@ def get_items():
         item_list.append(item_data)
     return render_template('items.html', item_list=item_list)
 
+# rota para o formulário
+@app.route('/add_item', methods=["GET"])
+def add_item_form():
+    return render_template('add_item.html')
+
+# Adiciona um item
+@app.route('/api/items/add', methods=["POST"])
+def add_item():
+    data = request.form
+    if 'name' and 'quantity' in data:
+        item = Item(name=data["name"], quantity=int(data['quantity']))
+        db.session.add(item)
+        db.session.commit()
+        return redirect('/')
+    return jsonify({'message': "Invalid item data"}), 400
+
+
 # Deleta um item
-@app.route('/api/items/delete/<int:item_id>', methods=["DELETE"])
+# @app.route('/api/items/delete/<int:item_id>', methods=["DELETE"])
+@app.route('/items/delete/<int:item_id>')
 def delete_item(item_id):
     item = Item.query.get(item_id)
     if item:
         db.session.delete(item)
         db.session.commit()
-        return jsonify({"message": "Item deleted successfully"})
-    return jsonify({"message": "Item not found"}), 404
+        return redirect('/')
+    return jsonify({"message": "Item not found"}) 
+
 
 # Atualizar item
 @app.route('/api/items/update/<int:item_id>', methods=["PUT"])

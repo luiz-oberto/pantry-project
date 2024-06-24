@@ -28,17 +28,42 @@ h2 {
     margin-top: 0;
 }
 
-ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+table {
+    border-collapse: collapse;
+    width: 100%;
 }
 
-li {
+th, td {
+    border: 1px solid #ccc;
     padding: 0.5em;
-    border-bottom: 1px solid #ccc;
+    text-align: left;
 }
 
-li:last-child {
-    border-bottom: none;
+th {
+    background-color: #f0f0f0;
+}
+
+td button {
+    margin: 0.5em;
+}
+
+td button[type="submit"] {
+    background-color: #ff0000;
+    color: #fff;
+    border: none;
+    padding: 0.5em 1em;
+    cursor: pointer;
+}
+
+td button[type="submit"]:hover {
+    background-color: #cc0000;
+}
+
+td a {
+    text-decoration: none;
+    color: #ffffff;
+}
+
+td a:hover {
+    color: #23527c;
 }

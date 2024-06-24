@@ -13,20 +13,25 @@
     <main>
         <section id="presentes">
             <h2>Itens Presentes</h2>
-            <ul id="presentes-list">
-                {% for item in item_list %}
-                    <li>{{ item.name }} ({{ item.quantity }} unidade(s))</li>
-                {% endfor %}
-            </ul>
+            <table id="presentes-table">
+            <tr>
+                <th>Item</th>
+                <!-- <th>Quantidade</th> -->
+                <th>Ações</th>
+            </tr>
+            {% for item in item_list %}
+            <tr>
+                <td>{{ item.name }} - {{ item.quantity }} unidade(s)</td>
+                <!-- <td><button>Alterar quantidade</button></td> -->
+                <td>
+                    <button class="btn btn-danger" type="submit" onclick="return confirm('Você tem certeza que deseja excluir o item {{ item.name }}')"><a href="{{ url_for('delete_item', item_id=item.id) }}">Excluir item</a></button>
+                    <button class="btn btn-warning">alterar item/quantidade</button>
+                </td>
+            </tr>
+            {% endfor %}
+            </table>
+            <button><a href="{{ url_for('add_item_form') }}">adicionar item</a></button>
         </section>
-        <!-- <section id="ausentes">
-            <h2>Itens Ausentes</h2>
-            <ul id="ausentes-list">
-                {% for item in ausentes %}
-                    <li>{{ item.nome }}</li>
-                {% endfor %}
-            </ul>
-        </section> -->
     </main>
 </body>
 </html>
