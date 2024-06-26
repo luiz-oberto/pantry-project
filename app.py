@@ -1,9 +1,9 @@
-from flask import Flask, render_template, request, jsonify, redirect
+from flask import Flask, render_template, request, jsonify, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-# app.config['SECRET_KEY'] = 'chave_123@'
+app.config['SECRET_KEY'] = 'chave_123@'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pantry.db'
 
 db = SQLAlchemy(app)
@@ -34,19 +34,23 @@ def add_item_form():
     return render_template('add_item.html')
 
 # Adiciona um item
-@app.route('/api/items/add', methods=["POST"])
+@app.route('/items/add', methods=["GET", "POST"])
 def add_item():
-    data = request.form
-    if 'name' and 'quantity' in data:
-        item = Item(name=data["name"], quantity=int(data['quantity']))
+   if request.method == "POST":
+        name = request.form.get("name")
+        quantity = request.form.get("quantity")
+
+        if not name or not quantity or int(quantity) < 0:
+            error = "Name or Quantity invalid."
+            return render_template("add_item.html", error=error)
+        
+        item = Item(name=name, quantity=quantity)
         db.session.add(item)
         db.session.commit()
         return redirect('/')
-    return jsonify({'message': "Invalid item data"}), 400
 
 
 # Deleta um item
-# @app.route('/api/items/delete/<int:item_id>', methods=["DELETE"])
 @app.route('/items/delete/<int:item_id>')
 def delete_item(item_id):
     item = Item.query.get(item_id)

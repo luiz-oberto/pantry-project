@@ -1,5 +1,4 @@
 <!-- add_item.html -->
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,12 +6,23 @@
 </head>
 <body>
     <h1>Add Item</h1>
-    <form action="/api/items/add" method="post">
+    <form action="/items/add" method="post">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name"><br><br>
         <label for="quantity">Quantity:</label>
         <input type="number" id="quantity" name="quantity"><br><br>
+        <!-- <label>Unit Type:</label><br>
+        <input type="radio" id="unit_type_unit" name="unit_type" value="unit">
+        <label for="unit_type_unit">Unitário</label><br>
+        <input type="radio" id="unit_type_kg" name="unit_type" value="kg">
+        <label for="unit_type_kg">Por Kilograma</label><br><br> -->
         <input type="submit" value="Add Item">
+        <button type="button" onclick="window.location.href='/'">Cancel</button>
     </form>
+    {% if error %}
+        <script>
+            window.alert("{{ error }}")
+        </script>
+    {% endif %}
 </body>
 </html>
