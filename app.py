@@ -28,7 +28,7 @@ def get_items():
         item_list.append(item_data)
     return render_template('items.html', item_list=item_list)
 
-# rota para o formulário
+# Rota para o formulário
 @app.route('/add_item', methods=["GET"])
 def add_item_form():
     return render_template('add_item.html')
@@ -58,22 +58,32 @@ def delete_item(item_id):
         db.session.delete(item)
         db.session.commit()
         return redirect('/')
-    return jsonify({"message": "Item not found"}) 
+    return redirect('/')
 
+# Rota para o formulário de atualização
+@app.route('/items/update/<int:item_id>', methods=["GET"])
+def update_item_form(item_id):
+    item = Item.query.get(item_id)
+    if item:
+        return render_template('update_item.html', item=item)
+    return jsonify({"message": "Item not found"}), 404
 
 # Atualizar item
-@app.route('/api/items/update/<int:item_id>', methods=["PUT"])
+@app.route('/items/update/<int:item_id>', methods=["POST"])
 def update_item(item_id):
     item = Item.query.get(item_id)
-    if not item:
-        jsonify({'message': "Item not found"}), 404
-    
-    data = request.json
-    if 'quantity' in data:
-        item.quantity = data['quantity']
-    
+    data_name = request.form.get('name')
+    data_quantity = request.form.get('quantity')
+    print(data_name)
+    print(item.name)
+    if item.name != data_name:
+        item.name = data_name
+    if item.quantity != data_quantity:
+        item.quantity = data_quantity
+
+    db.session.add(item)
     db.session.commit()
-    return jsonify({'message': "Item updated successfully"})
+    return redirect('/')
 
 
 # @app.route('/login')
