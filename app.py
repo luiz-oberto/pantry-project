@@ -8,6 +8,7 @@ app.config['SECRET_KEY'] = 'secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pantry.db'
 
 db = SQLAlchemy(app)
+# configurando o LoginManager
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -31,12 +32,12 @@ def load_user(user_id):
 
 # rota de login de usuário
 @app.route('/login', methods=["GET"])
-def rota_para_login():
+def login():
     return render_template('login.html')
 
 # fazer login
 @app.route('/api/login', methods=["GET","POST"])
-def login():
+def efetuar_login():
     username = request.form.get('username')
     password = request.form.get('password')
     user = User.query.filter_by(username=username).first()
@@ -56,9 +57,9 @@ def logout():
 
 # @app.route('/register')
 
-############################ --END AUTENTICAÇÃO-- ################################
+########################## --END AUTENTICAÇÃO-- ################################
 
-############################ --ROTAS INTERAÇÃO COM ITENS-- #####################
+########################## --ROTAS INTERAÇÃO COM ITENS-- #####################
 # Lista todos os itens na página inicial
 @app.route('/')
 def get_items():
@@ -75,11 +76,13 @@ def get_items():
 
 # Rota para o formulário
 @app.route('/add_item', methods=["GET"])
+@login_required
 def add_item_form():
     return render_template('add_item.html')
 
 # Adiciona um item
 @app.route('/items/add', methods=["GET", "POST"])
+@login_required
 def add_item():
    if request.method == "POST":
         name = request.form.get("name")
@@ -97,6 +100,7 @@ def add_item():
 
 # Deleta um item
 @app.route('/items/delete/<int:item_id>')
+@login_required
 def delete_item(item_id):
     item = Item.query.get(item_id)
     if item:
@@ -107,6 +111,7 @@ def delete_item(item_id):
 
 # Rota para o formulário de atualização
 @app.route('/items/update/<int:item_id>', methods=["GET"])
+@login_required
 def update_item_form(item_id):
     item = Item.query.get(item_id)
     if item:
@@ -115,6 +120,7 @@ def update_item_form(item_id):
 
 # Atualizar item
 @app.route('/items/update/<int:item_id>', methods=["POST"])
+@login_required
 def update_item(item_id):
     item = Item.query.get(item_id)
     data_name = request.form.get('name')
