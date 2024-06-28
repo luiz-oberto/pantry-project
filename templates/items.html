@@ -9,6 +9,11 @@
 <body>
     <header>
         <h1>Despensa</h1>
+        {% if current_user.is_authenticated %}
+            <button><a href="{{ url_for('logout') }}">Logout</a></button>
+        {% else %}
+            <button><a href="{{ url_for('rota_para_login') }}">Login</a></button>
+        {% endif %}
     </header>
     <main>
         <section id="presentes">

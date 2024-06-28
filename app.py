@@ -1,12 +1,21 @@
 from flask import Flask, render_template, request, jsonify, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'chave_123@'
+app.config['SECRET_KEY'] = 'secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pantry.db'
 
 db = SQLAlchemy(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), nullable=False, unique=True)
+    password = db.Column(db.String(80), nullable=False)
 
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -14,6 +23,42 @@ class Item(db.Model):
     quantity = db.Column(db.Integer, nullable=False)
 
 
+############################## --ROTAS AUTENTICAÇÃO-- ###################################
+# autenticação - carrega o usuário que não deslogou na última sessão
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+# rota de login de usuário
+@app.route('/login', methods=["GET"])
+def rota_para_login():
+    return render_template('login.html')
+
+# fazer login
+@app.route('/api/login', methods=["GET","POST"])
+def login():
+    username = request.form.get('username')
+    password = request.form.get('password')
+    user = User.query.filter_by(username=username).first()
+
+    if user and password == user.password:
+            login_user(user)
+            return redirect('/')
+    
+    return 'informação inválida'
+
+# rota de logout
+@app.route('/logout', methods=["GET"])
+@login_required
+def logout():
+    logout_user()
+    return redirect('/')
+
+# @app.route('/register')
+
+############################ --END AUTENTICAÇÃO-- ################################
+
+############################ --ROTAS INTERAÇÃO COM ITENS-- #####################
 # Lista todos os itens na página inicial
 @app.route('/')
 def get_items():
@@ -85,9 +130,6 @@ def update_item(item_id):
     db.session.commit()
     return redirect('/')
 
-
-# @app.route('/login')
-# @app.route('/logout')
 
 if __name__ == '__main__':
     app.run(debug=True)
