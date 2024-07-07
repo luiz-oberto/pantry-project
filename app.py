@@ -9,7 +9,7 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, log
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'ebda02cbdea290a5d4067e69b8d8397b385484ef376a4ec6fe76eb935a1552ed'
+app.config['SECRET_KEY'] = 'SECRETkEY'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pantry.db'
 
 db = SQLAlchemy(app)
