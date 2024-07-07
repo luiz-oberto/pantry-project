@@ -1,10 +1,15 @@
 from flask import Flask, render_template, request, jsonify, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
+# inicializando a conexão
+# from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
+# from sqlalchemy.orm import sessionmaker, relationship
+# from sqlalchemy.ext.declarative import declarative_base
+
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'secret_key'
+app.config['SECRET_KEY'] = 'ebda02cbdea290a5d4067e69b8d8397b385484ef376a4ec6fe76eb935a1552ed'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pantry.db'
 
 db = SQLAlchemy(app)
@@ -13,11 +18,13 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), nullable=False, unique=True)
-    password = db.Column(db.String(80), nullable=False)
-
+    password = db.Column(db.String(80), nullable=False
+)
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False)
